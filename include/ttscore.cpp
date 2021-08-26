@@ -19,7 +19,7 @@ PyObject* getInstanceText2Speech(const char* config_file, const char* model_file
 {
     PyObject* pInstanceText2Speech;
     Py_Initialize();
-    PyRun_SimpleString("import sys; sys.path.append('/nolan/demo/TTS-Server/third/TTS-Core/src')");
+    PyRun_SimpleString("import sys; sys.path.append('../src')");
     if (Py_IsInitialized())
     {
         PyObject* pModule = PyImport_ImportModule("Text2Speech");
