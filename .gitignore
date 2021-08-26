@@ -1,4 +1,5 @@
 __pycache__/
+/examples/
 .idea/
 *.pth
 *.yaml

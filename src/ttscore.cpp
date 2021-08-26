@@ -1,4 +1,4 @@
-#include "ttscore.h"
+#include "../include/ttscore.h"
 
 double inference(PyObject* pInstanceText2Speech, const char* text, const char* path, int sample_rate)
 {

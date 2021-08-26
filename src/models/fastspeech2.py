@@ -1,7 +1,5 @@
 import torch
 import torch.nn.functional as F
-from parallel_wavegan.utils import download_pretrained_model
-from parallel_wavegan.utils import load_model
 from espnet.nets.pytorch_backend.transformer.embedding import ScaledPositionalEncoding
 from espnet.nets.pytorch_backend.fastspeech.duration_predictor import DurationPredictor
 from espnet2.tts.variance_predictor import VariancePredictor
