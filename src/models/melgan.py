@@ -127,18 +127,6 @@ class MelGANGenerator(torch.nn.Module):
         # initialize pqmf for inference
         self.pqmf = None
 
-    def forward(self, c):
-        """Calculate forward propagation.
-
-        Args:
-            c (Tensor): Input tensor (B, channels, T).
-
-        Returns:
-            Tensor: Output tensor (B, 1, T ** prod(upsample_scales)).
-
-        """
-        return self.melgan(c)
-
     def remove_weight_norm(self):
         """Remove weight normalization module from all of the layers."""
 

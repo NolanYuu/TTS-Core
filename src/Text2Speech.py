@@ -2,8 +2,6 @@ import yaml
 import torch
 import argparse
 import soundfile as sf
-# from parallel_wavegan.utils import download_pretrained_model
-# from parallel_wavegan.utils import load_model
 from models import FastSpeech2
 from models import melgan
 from models import pqmf
