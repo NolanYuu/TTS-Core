@@ -1,4 +1,4 @@
-#include "../include/ttscore.h"
+#include "../include/ttscore_api.h"
 
 double inference(PyObject* pInstanceText2Speech, const char* text, const char* path, int sample_rate)
 {
@@ -19,7 +19,7 @@ PyObject* getInstanceText2Speech(const char* config_file, const char* model_file
 {
     PyObject* pInstanceText2Speech;
     Py_Initialize();
-    PyRun_SimpleString("import sys; sys.path.append('../third/TTS-Core/src')");
+    PyRun_SimpleString("import sys; sys.path.append('../submodules/TTS-Core/src/python_api')");
     if (Py_IsInitialized())
     {
         PyObject* pModule = PyImport_ImportModule("Text2Speech");

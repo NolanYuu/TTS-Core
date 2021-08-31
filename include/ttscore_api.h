@@ -1,5 +1,5 @@
-#ifndef TTS_CORE_H
-#define TTS_CORE_H
+#ifndef TTS_CORE_API_H
+#define TTS_CORE_API_H
 #include <python3.6m/Python.h>
 
 #ifdef __cplusplus

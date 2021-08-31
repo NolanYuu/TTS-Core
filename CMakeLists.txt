@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ttscore)
+project(ttscore_api)
 include_directories(./include)
-add_library(ttscore SHARED ./src/ttscore.cpp)
-target_link_libraries(ttscore python3.6m)
+add_library(ttscore_api SHARED ./src/ttscore_api.cpp)
+target_link_libraries(ttscore_api python3.6m)
