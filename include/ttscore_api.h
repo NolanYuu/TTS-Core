@@ -8,7 +8,7 @@ extern "C" {
 
 double inference(PyObject* pInstanceText2Speech, const char* text, const char* path, int sample_rate);
 
-PyObject* getInstanceText2Speech(const char* config_file, const char* model_file, int use_gpu);
+PyObject* getInstanceText2Speech(const char* model_conf, const char* model_ckpt, const char* vocoder_conf, const char* vocoder_ckpt, int use_gpu);
 
 #ifdef __cplusplus
 }

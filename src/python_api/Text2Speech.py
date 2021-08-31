@@ -4,25 +4,31 @@ import argparse
 import soundfile as sf
 from parallel_wavegan.utils import download_pretrained_model
 from parallel_wavegan.utils import load_model
-from models import FastSpeech2
+from model import FastSpeech2
 from text import Preprocessor
+from vocoder import MelGAN, PQMF
 
 
 class Text2Speech:
-    def __init__(self, config_file, model_file, use_gpu=True):
-        with open(config_file, "r", encoding="utf-8") as f:
-            args = yaml.safe_load(f)
-        args = argparse.Namespace(**args)
+    def __init__(self, model_conf, model_ckpt, vocoder_conf, vocoder_ckpt, use_gpu=True):
+        with open(model_conf, "r", encoding="utf-8") as f:
+            model_args = yaml.safe_load(f)
+        with open(vocoder_conf, "r", encoding="utf-8") as f:
+            vocoder_args = yaml.safe_load(f)
+        model_args = argparse.Namespace(**model_args)
+        vocoder_args = argparse.Namespace(**vocoder_args)
+
         self.use_gpu = use_gpu
 
-        self.model = FastSpeech2(
-            idim=len(args.token_list), odim=80, **args.tts_conf).eval()
-        self.model.load_state_dict(torch.load(model_file))
+        self.preprocessor = Preprocessor(token_list=model_args.token_list)
 
-        self.preprocessor = Preprocessor(token_list=args.token_list)
-        vocoder_tag = "ljspeech_multi_band_melgan.v2"
-        self.vocoder = load_model(
-            download_pretrained_model(vocoder_tag)).eval()
+        self.model = FastSpeech2(idim=len(model_args.token_list), **model_args.tts_conf).eval()
+        self.model.load_state_dict(torch.load(model_ckpt))
+
+        self.vocoder = MelGAN(**vocoder_args.vocoder_conf)
+        self.vocoder.load_state_dict(torch.load(vocoder_ckpt))
+        self.vocoder.pqmf = PQMF(**vocoder_args.pqmf_conf)
+
         if self.use_gpu:
             self.model = self.model.to("cuda:0")
             self.vocoder = self.vocoder.to("cuda:0")
@@ -34,7 +40,7 @@ class Text2Speech:
         if self.use_gpu:
             text = text.to("cuda:0")
         mel = self.model(text)
-        wav = self.vocoder.inference(mel)
+        wav = self.vocoder(mel)
         sf.write(path, wav.data.cpu().numpy(), 22050, "PCM_16")
 
         return wav.size(0) / fs
