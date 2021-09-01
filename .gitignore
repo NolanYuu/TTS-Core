@@ -1,5 +1,5 @@
 __pycache__/
-/examples/
+/models/
 /build/
 .idea/
 *.pth
