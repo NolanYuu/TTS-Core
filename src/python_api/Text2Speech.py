@@ -1,3 +1,4 @@
+import pdb
 import yaml
 import torch
 import argparse
@@ -38,7 +39,8 @@ class Text2Speech:
             self.model = self.model.to("cuda:0")
             self.vocoder = self.vocoder.to("cuda:0")
 
-    def __call__(self, text, path, fs=22050):
+    def __call__(self, text, path, fs):
+        # pdb.set_trace()
         print("call0")
         text = self.preprocessor(text)
         print("call1")
@@ -54,4 +56,4 @@ class Text2Speech:
         sf.write(path, wav.data.cpu().numpy(), fs, "PCM_16")
         print("call6")
 
-        return
+        return 
