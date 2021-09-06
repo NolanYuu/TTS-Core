@@ -1,6 +1,5 @@
 import tacotron_cleaner.cleaners
 import g2p_en
-import numpy as np
 
 
 class Preprocessor:
@@ -22,6 +21,5 @@ class Preprocessor:
         text = tacotron_cleaner.cleaners.custom_english_cleaners(text)
         tokens = self.g2p(text)
         tokens = list(filter(lambda s: s != " ", tokens))
-        text_ints = self.tokens2ids(tokens)
-        text = np.array(text_ints, dtype=np.int64)
+        text = self.tokens2ids(tokens)
         return text

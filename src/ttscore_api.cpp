@@ -10,9 +10,7 @@ STATUS inference(void* pInstanceHandle, const char* text, const char* path, int 
     PyTuple_SetItem(pText2SpeechCallArgList, 1, PyUnicode_FromString(path));
     PyTuple_SetItem(pText2SpeechCallArgList, 2, PyLong_FromLong(sample_rate));
 
-    std::cout << "c++ok" << " " << pInstanceHandle << std::endl;
     PyObject_CallObject(pInstanceText2Speech, pText2SpeechCallArgList);
-    std::cout << "c++ok" << " " << pInstanceText2Speech << std::endl;
 
     return SUCCESS;
 }
@@ -23,7 +21,7 @@ STATUS getInstanceHandle(void** ppInstanceHandle, const char* model_conf, const 
     PyRun_SimpleString("import sys; sys.path.append('../submodules/TTS-Core/src/python_api')");
     if (Py_IsInitialized())
     {
-        PyObject* pModule = PyImport_ImportModule("Text2Speech");
+        PyObject* pModule = PyImport_ImportModule("text2speech");
         PyObject* pModuleDict = PyModule_GetDict(pModule);
         PyObject* pClassText2Speech = PyDict_GetItemString(pModuleDict, "Text2Speech");
         PyObject* pText2SpeechArgList = PyTuple_New(5);
@@ -35,13 +33,17 @@ STATUS getInstanceHandle(void** ppInstanceHandle, const char* model_conf, const 
 
         PyObject* pInstanceMethodText2Speech = PyInstanceMethod_New(pClassText2Speech);
         PyObject* pInstanceText2Speech = PyObject_CallObject(pInstanceMethodText2Speech, pText2SpeechArgList);
-        *ppInstanceHandle = static_cast<void *>(pInstanceText2Speech);
+        *ppInstanceHandle = static_cast<void*>(pInstanceText2Speech);
 
-        // Py_Finalize();
         return SUCCESS;
     }
     else
     {
         return ERROR_PYINIT;
     }
+}
+
+STATUS finalize()
+{
+    Py_Finalize();
 }

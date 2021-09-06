@@ -1,11 +1,10 @@
 import torch
 import torch.nn.functional as F
+from model.pytorch_backend import LengthRegulator
 from espnet.nets.pytorch_backend.transformer.embedding import ScaledPositionalEncoding
 from espnet.nets.pytorch_backend.fastspeech.duration_predictor import DurationPredictor
 from espnet2.tts.variance_predictor import VariancePredictor
-from espnet.nets.pytorch_backend.fastspeech.length_regulator import LengthRegulator
 from espnet.nets.pytorch_backend.tacotron2.decoder import Postnet
-from espnet.nets.pytorch_backend.nets_utils import make_pad_mask
 from espnet.nets.pytorch_backend.transformer.encoder import (
     Encoder as TransformerEncoder,
 )
@@ -169,16 +168,13 @@ class FastSpeech2(torch.nn.Module):
         speed: float = 1.0,
     ):
         x = text
-
         x = F.pad(x, [0, 1], "constant", self.eos)
-
-        ilens = torch.tensor([x.shape[0]], dtype=torch.long, device=x.device)
         xs = x.unsqueeze(0)
 
-        x_masks = torch.ones((1, 1, ilens.item())).to(xs.device)
+        x_masks = torch.tensor([[[1.0] * x.shape[0]]], dtype=torch.float32, device=xs.device)
         hs, _ = self.encoder(xs, x_masks)
 
-        d_masks = make_pad_mask(ilens).to(xs.device)
+        d_masks = torch.tensor([[False] * x.shape[0]], dtype=torch.bool, device=xs.device)
 
         p_outs = self.pitch_predictor(hs.detach(), d_masks.unsqueeze(-1))
         e_outs = self.energy_predictor(hs, d_masks.unsqueeze(-1))
