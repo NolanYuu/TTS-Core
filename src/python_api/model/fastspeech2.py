@@ -1,9 +1,9 @@
 import torch
 import torch.nn.functional as F
 from model.pytorch_backend import LengthRegulator
+from model.pytorch_backend import VariancePredictor
 from espnet.nets.pytorch_backend.transformer.embedding import ScaledPositionalEncoding
 from espnet.nets.pytorch_backend.fastspeech.duration_predictor import DurationPredictor
-from espnet2.tts.variance_predictor import VariancePredictor
 from espnet.nets.pytorch_backend.tacotron2.decoder import Postnet
 from espnet.nets.pytorch_backend.transformer.encoder import (
     Encoder as TransformerEncoder,

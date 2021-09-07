@@ -1,1 +1,1 @@
-from .Text2Speech import Text2Speech
+from .text2speech import Text2Speech
