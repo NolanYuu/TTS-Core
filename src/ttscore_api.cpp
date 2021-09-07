@@ -1,6 +1,5 @@
 #include "ttscore_api.h"
 #include "ttscore_status.h"
-#include <iostream>
 
 STATUS initialize()
 {
