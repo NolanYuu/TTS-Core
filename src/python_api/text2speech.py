@@ -1,4 +1,3 @@
-import pdb
 import yaml
 import torch
 import argparse
@@ -38,6 +37,7 @@ class Text2Speech:
 
     def __call__(self, text, path, fs):
         text = self.preprocessor(text)
+        # do not use .cuda() or to("cuda:0")!
         text = torch.tensor(text, dtype=torch.long, device=self.device)
         mel = self.model(text)
         wav = self.vocoder(mel)

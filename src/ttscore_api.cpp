@@ -2,39 +2,13 @@
 #include "ttscore_status.h"
 #include <iostream>
 
-STATUS inference(void* pInstanceHandle, const char* text, const char* path, int sample_rate)
-{
-    PyObject* pInstanceText2Speech = static_cast<PyObject*>(pInstanceHandle);
-    PyObject* pText2SpeechCallArgList = PyTuple_New(3);
-    PyTuple_SetItem(pText2SpeechCallArgList, 0, PyUnicode_FromString(text));
-    PyTuple_SetItem(pText2SpeechCallArgList, 1, PyUnicode_FromString(path));
-    PyTuple_SetItem(pText2SpeechCallArgList, 2, PyLong_FromLong(sample_rate));
-
-    PyObject_CallObject(pInstanceText2Speech, pText2SpeechCallArgList);
-
-    return SUCCESS;
-}
-
-STATUS getInstanceHandle(void** ppInstanceHandle, const char* model_conf, const char* model_ckpt, const char* vocoder_conf, const char* vocoder_ckpt, int use_gpu)
+STATUS initialize()
 {
     Py_Initialize();
     PyRun_SimpleString("import sys; sys.path.append('../submodules/TTS-Core/src/python_api')");
+
     if (Py_IsInitialized())
     {
-        PyObject* pModule = PyImport_ImportModule("text2speech");
-        PyObject* pModuleDict = PyModule_GetDict(pModule);
-        PyObject* pClassText2Speech = PyDict_GetItemString(pModuleDict, "Text2Speech");
-        PyObject* pText2SpeechArgList = PyTuple_New(5);
-        PyTuple_SetItem(pText2SpeechArgList, 0, PyUnicode_FromString(model_conf));
-        PyTuple_SetItem(pText2SpeechArgList, 1, PyUnicode_FromString(model_ckpt));
-        PyTuple_SetItem(pText2SpeechArgList, 2, PyUnicode_FromString(vocoder_conf));
-        PyTuple_SetItem(pText2SpeechArgList, 3, PyUnicode_FromString(vocoder_ckpt));
-        PyTuple_SetItem(pText2SpeechArgList, 4, PyBool_FromLong(use_gpu));
-
-        PyObject* pInstanceMethodText2Speech = PyInstanceMethod_New(pClassText2Speech);
-        PyObject* pInstanceText2Speech = PyObject_CallObject(pInstanceMethodText2Speech, pText2SpeechArgList);
-        *ppInstanceHandle = static_cast<void*>(pInstanceText2Speech);
-
         return SUCCESS;
     }
     else
@@ -43,7 +17,41 @@ STATUS getInstanceHandle(void** ppInstanceHandle, const char* model_conf, const 
     }
 }
 
+STATUS inference(void *p_handle, const char *text, const char *path, int sample_rate)
+{
+    PyObject *p_instance = static_cast<PyObject *>(p_handle);
+    PyObject *p_arg_list = PyTuple_New(3);
+    PyTuple_SetItem(p_arg_list, 0, PyUnicode_FromString(text));
+    PyTuple_SetItem(p_arg_list, 1, PyUnicode_FromString(path));
+    PyTuple_SetItem(p_arg_list, 2, PyLong_FromLong(sample_rate));
+
+    PyObject_CallObject(p_instance, p_arg_list);
+
+    return SUCCESS;
+}
+
+STATUS getInstanceHandle(void **pp_handle, const char *model_conf, const char *model_ckpt, const char *vocoder_conf, const char *vocoder_ckpt, int use_gpu)
+{
+    PyObject *p_module = PyImport_ImportModule("text2speech");
+    PyObject *p_module_dict = PyModule_GetDict(p_module);
+    PyObject *p_class = PyDict_GetItemString(p_module_dict, "Text2Speech");
+    PyObject *p_arg_list = PyTuple_New(5);
+    PyTuple_SetItem(p_arg_list, 0, PyUnicode_FromString(model_conf));
+    PyTuple_SetItem(p_arg_list, 1, PyUnicode_FromString(model_ckpt));
+    PyTuple_SetItem(p_arg_list, 2, PyUnicode_FromString(vocoder_conf));
+    PyTuple_SetItem(p_arg_list, 3, PyUnicode_FromString(vocoder_ckpt));
+    PyTuple_SetItem(p_arg_list, 4, PyBool_FromLong(use_gpu));
+
+    PyObject *p_instance_method = PyInstanceMethod_New(p_class);
+    PyObject *p_instance = PyObject_CallObject(p_instance_method, p_arg_list);
+    *pp_handle = static_cast<void *>(p_instance);
+
+    return SUCCESS;
+}
+
 STATUS finalize()
 {
     Py_Finalize();
+
+    return SUCCESS;
 }

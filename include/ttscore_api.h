@@ -4,14 +4,17 @@
 #include "ttscore_status.h"
 
 #ifdef __cplusplus
-extern "C" { 
+extern "C"
+{
 #endif
 
-STATUS inference(void* pInstanceHandle, const char* text, const char* path, int sample_rate);
+    STATUS initialize();
 
-STATUS getInstanceHandle(void** ppInstanceHandle, const char* model_conf, const char* model_ckpt, const char* vocoder_conf, const char* vocoder_ckpt, int use_gpu);
+    STATUS inference(void *, const char *, const char *, int);
 
-STATUS finalize();
+    STATUS getInstanceHandle(void **, const char *, const char *, const char *, const char *, int);
+
+    STATUS finalize();
 
 #ifdef __cplusplus
 }
