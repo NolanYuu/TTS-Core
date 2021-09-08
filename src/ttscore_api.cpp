@@ -26,6 +26,8 @@ STATUS inference(void *p_handle, const char *text, const char *path, int sample_
 
     PyObject_CallObject(p_instance, p_arg_list);
 
+    Py_DECREF(p_arg_list);
+
     return SUCCESS;
 }
 
@@ -44,6 +46,12 @@ STATUS getInstanceHandle(void **pp_handle, const char *model_conf, const char *m
     PyObject *p_instance_method = PyInstanceMethod_New(p_class);
     PyObject *p_instance = PyObject_CallObject(p_instance_method, p_arg_list);
     *pp_handle = static_cast<void *>(p_instance);
+
+    Py_DECREF(p_module);
+    Py_DECREF(p_module_dict);
+    Py_DECREF(p_class);
+    Py_DECREF(p_arg_list);
+    Py_DECREF(p_instance_method);
 
     return SUCCESS;
 }
