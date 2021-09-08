@@ -2,12 +2,10 @@ import torch
 import torch.nn.functional as F
 from model.pytorch_backend import LengthRegulator
 from model.pytorch_backend import VariancePredictor
-from espnet.nets.pytorch_backend.transformer.embedding import ScaledPositionalEncoding
-from espnet.nets.pytorch_backend.fastspeech.duration_predictor import DurationPredictor
-from espnet.nets.pytorch_backend.tacotron2.decoder import Postnet
-from espnet.nets.pytorch_backend.transformer.encoder import (
-    Encoder as TransformerEncoder,
-)
+from model.pytorch_backend import ScaledPositionalEncoding
+from model.pytorch_backend import DurationPredictor
+from model.pytorch_backend import Postnet
+from model.pytorch_backend import TransformerEncoder
 
 
 class FastSpeech2(torch.nn.Module):
@@ -58,7 +56,7 @@ class FastSpeech2(torch.nn.Module):
         duration_predictor_dropout_rate: float = 0.1,
         postnet_dropout_rate: float = 0.5,
     ):
-        super().__init__()
+        super(FastSpeech2, self).__init__()
 
         self.idim = idim
         self.odim = odim
@@ -179,7 +177,7 @@ class FastSpeech2(torch.nn.Module):
         p_outs = self.pitch_predictor(hs.detach(), d_masks.unsqueeze(-1))
         e_outs = self.energy_predictor(hs, d_masks.unsqueeze(-1))
 
-        d_outs = self.duration_predictor.inference(hs, d_masks)
+        d_outs = self.duration_predictor(hs, d_masks)
         p_embs = self.pitch_embed(p_outs.transpose(1, 2)).transpose(1, 2)
         e_embs = self.energy_embed(e_outs.transpose(1, 2)).transpose(1, 2)
         hs = hs + e_embs + p_embs
