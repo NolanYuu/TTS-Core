@@ -1,10 +1,12 @@
 #include "ttscore_api.h"
 #include "ttscore_status.h"
+#include <iostream>
 
 STATUS initialize()
 {
     Py_Initialize();
-    PyRun_SimpleString("import sys; sys.path.append('../submodules/TTS-Core/src/python_api')");
+    PyRun_SimpleString("import sys; sys.path = ['', '/opt/conda/lib/python38.zip', '/opt/conda/lib/python3.8', '/opt/conda/lib/python3.8/lib-dynload', '/opt/conda/lib/python3.8/site-packages'];");
+    PyRun_SimpleString("sys.path.append('../submodules/TTS-Core/src/python_api')");
 
     if (Py_IsInitialized())
     {

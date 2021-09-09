@@ -1,6 +1,6 @@
 #ifndef TTS_CORE_API_H
 #define TTS_CORE_API_H
-#include <python3.6m/Python.h>
+#include <python3.8/Python.h>
 #include "ttscore_status.h"
 
 #ifdef __cplusplus
